@@ -22,6 +22,9 @@ nlp_map = {
     "playing": "spotify_now_playing",
     "now": "spotify_now_playing",
     "current": "spotify_now_playing",
+    "help": "help",
+    "assist": "help",
+    "what can you do": "help",
 
 }
 
@@ -35,11 +38,6 @@ def say_goodbye():
     """Say goodbye to the user."""
     print("Goodbye from Pizza!")
     return False  # Return False to indicate exit
-
-router.register("hello", say_hello)
-router.register("exit", say_goodbye)
-router.register("quit", say_goodbye)
-
 
 def load_plugins(router, plugin_folder="plugins"):
     """Load plugins from the specified folder 'src/plugins/' and
@@ -62,6 +60,23 @@ def load_plugins(router, plugin_folder="plugins"):
             else:
                 print(f"Skipped {module_name}: no 'register()' function.")
 
+def show_help():
+    """Display all available commands and their descriptions."""
+    print("\n🧠 Available Commands:\n")
+
+    for name in router.commands:
+        func = router.commands[name]
+        doc = func.__doc__.strip() if func.__doc__ else "No description provided."
+        print(f"🔹 {name:<20} — {doc}")
+
+    print("\nTry saying things like:")
+    print("  • play Smooth Operator")
+    print("  • pause")
+    print("  • now playing")
+    print("  • hello")
+    print("  • quit\n")
+    
+
 load_plugins(router)
 command_matcher = CommandMatcher(
     router.commands.keys(),
@@ -69,8 +84,17 @@ command_matcher = CommandMatcher(
         "now playing": "spotify_now_playing",
         "what's playing": "spotify_now_playing",
         "current song": "spotify_now_playing",
+        "help": "help",
+        "assist": "help",
+        "what can you do": "help",
     }
 )
+
+
+router.register("hello", say_hello)
+router.register("exit", say_goodbye)
+router.register("quit", say_goodbye)
+router.register("help", show_help)
 
 # Assistant loop
 if __name__ == "__main__":
