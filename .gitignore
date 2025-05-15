@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.log
+
+# Virtual environments
+.venv/
+env/
+venv/
+
+# Environment and secrets
+.env
+.env.*
+
+# VS Code settings
+.vscode/
+
+# macOS / Windows system files
+.DS_Store
+Thumbs.db
+
+# Compiled files or test coverage
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+*.coverage
+coverage.xml
+htmlcov/
