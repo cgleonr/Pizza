@@ -15,7 +15,7 @@ def load_settings():
     missing = []
     
     for var in REQUIRED_ENV_VARS:
-        value = os.getev(var)
+        value = os.getenv(var)
         if value is None:
             missing.append(var)
         else:

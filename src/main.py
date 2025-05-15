@@ -82,10 +82,19 @@ if __name__ == "__main__":
                 parsed = nlp_parser.parse(cmd)
                 if parsed:
                     print(f"Interpreted as: {parsed}")
-                    result = router.handle(parsed)
-                else:
-                    print("Command not recognized.")
 
+                    # Check if the command needs a song query
+                    if parsed == "spotify_play_song":
+                        query = nlp_parser.extract_song_query(cmd)
+                        if query:
+                            print(f"🎵 Extracted query: '{query}'")
+                            result = router.handle(parsed, query=query)
+                        else:
+                            result = router.handle(parsed)  # fallback: prompt for song
+                    else:
+                        result = router.handle(parsed)
+                else:
+                    print("❌ Command not recognized.")
 
             if result is False:
                 break

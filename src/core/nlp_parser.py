@@ -16,18 +16,13 @@ class NLPCommandParser:
         return None
 
     def extract_song_query(self, text):
-        doc = self.nlp(text)  # ← DON'T lowercase
+        doc = self.nlp(text)
 
-        # Try longest noun chunk excluding weak pronouns
-        noun_chunks = [chunk.text.strip() for chunk in doc.noun_chunks if chunk.text.lower() not in ("you", "me")]
-        if noun_chunks:
-            best_chunk = max(noun_chunks, key=lambda c: len(c.split()))
-            if len(best_chunk.split()) > 1:
-                return best_chunk.lower()
-
-        # Try named entities (song titles, artists)
-        entities = [ent.text.strip() for ent in doc.ents if ent.label_ in ("WORK_OF_ART", "PERSON", "ORG")]
-        if entities:
-            return max(entities, key=lambda e: len(e.split())).lower()
+        # Try to locate the verb 'play'
+        for token in doc:
+            if token.lemma_ in ["play", "listen to", "hear"]:
+                after = text[token.idx + len(token.text):].strip(" ?.")
+                if after:
+                    return after.lower()
 
         return None
