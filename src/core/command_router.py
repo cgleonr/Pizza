@@ -15,14 +15,14 @@ class CommandRouter:
         # Convert the command name to lowercase to ensure case-insensitivity
         self.commands[name.lower()] = func
 
-    def handle(self, command:str):
+    def handle(self, command:str, *args, **kwargs):
         """Handle a command by executing the corresponding function"""
         # Strip any leading or trailing whitespace and convert to lowercase
         command = command.strip().lower()
         # Check if the command exists in the registry
         if command in self.commands:
             # Execute the corresponding function and return its result
-            return self.commands[command]()
+            return self.commands[command](*args, **kwargs)
         else:
             # If the command is not found, return an error message
             # This could be replaced with a more sophisticated error handling mechanism
