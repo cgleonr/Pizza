@@ -19,6 +19,10 @@ nlp_map = {
     "music": "spotify_play",   # fallback match
     "song": "spotify_play_song",
     "track": "spotify_play_song",
+    "playing": "spotify_now_playing",
+    "now": "spotify_now_playing",
+    "current": "spotify_now_playing",
+
 }
 
 nlp_parser = NLPCommandParser(nlp_map)
@@ -59,7 +63,14 @@ def load_plugins(router, plugin_folder="plugins"):
                 print(f"Skipped {module_name}: no 'register()' function.")
 
 load_plugins(router)
-command_matcher = CommandMatcher(router.commands.keys())
+command_matcher = CommandMatcher(
+    router.commands.keys(),
+    aliases={
+        "now playing": "spotify_now_playing",
+        "what's playing": "spotify_now_playing",
+        "current song": "spotify_now_playing",
+    }
+)
 
 # Assistant loop
 if __name__ == "__main__":
