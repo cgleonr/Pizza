@@ -1,12 +1,23 @@
 import os
 from dotenv import load_dotenv
 from core.command_router import CommandRouter
+from core.command_matcher import CommandMatcher
+from core.nlp_parser import NLPCommandParser
 import importlib.util
 
 
 load_dotenv()
 
 router = CommandRouter()
+nlp_map = {
+    "greet": "hello",
+    "greetings": "hello",
+    "hi": "hello",
+    "exit": "exit",
+    "introduce": "hello",
+    "quit": "exit",
+}
+nlp_parser = NLPCommandParser(nlp_map)
 
 def say_hello():
     """Say hello to the user."""
@@ -23,12 +34,13 @@ router.register("quit", say_goodbye)
 
 
 def load_plugins(router, plugin_folder="plugins"):
-    """Load plugins from the specified folder and
+    """Load plugins from the specified folder 'src/plugins/' and
     register their commands."""
-    for filename in os.listdir(plugin_folder):
+    plugin_path = os.path.join(os.path.dirname(__file__), plugin_folder)
+    for filename in os.listdir(plugin_path):
         if filename.endswith(".py") and filename != "__init__.py":
             module_name = filename[:-3]
-            file_path = os.path.join(plugin_folder, filename)
+            file_path = os.path.join(plugin_path, filename)
 
             spec = importlib.util.spec_from_file_location(
                 module_name, file_path)
@@ -43,6 +55,7 @@ def load_plugins(router, plugin_folder="plugins"):
                 print(f"Skipped {module_name}: no 'register()' function.")
 
 load_plugins(router)
+command_matcher = CommandMatcher(router.commands.keys())
 
 # Assistant loop
 if __name__ == "__main__":
@@ -52,9 +65,27 @@ if __name__ == "__main__":
     while True:
         try:
             cmd = input("> ")
-            result = router.handle(cmd)
+
+            result = None
+
+            # Step 1: try command matcher
+            matched = command_matcher.match(cmd)
+            if matched:
+                print(f"Interpreted as: {matched}")
+                result = router.handle(matched)
+            else:
+                # Step 2: try NLP parser
+                parsed = nlp_parser.parse(cmd)
+                if parsed:
+                    print(f"Interpreted as: {parsed}")
+                    result = router.handle(parsed)
+                else:
+                    print("Command not recognized.")
+
+
             if result is False:
                 break
+
         except KeyboardInterrupt:
-            print("\nGoodbye...")
+            print("\nExiting...")
             break
