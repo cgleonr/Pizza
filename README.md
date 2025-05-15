@@ -26,3 +26,63 @@ def register(router):
         print("👋 Hello from the Hello Plugin!")
 
     router.register("hello_plugin", hello)
+```
+
+---
+
+## 📂 Project Structure
+
+```
+pizza/
+├── core/                  # Core logic (command router, future internals)
+│   └── command_router.py
+├── plugins/               # Drop-in plugin modules
+│   └── hello_plugin.py
+├── main.py                # Entry point for the assistant
+├── requirements.txt       # Dependencies
+├── .env                   # Environment variables (not committed)
+```
+
+---
+
+## 🚀 Getting Started
+
+1. Clone the repository
+2. Create and activate a virtual environment:
+   ```bash
+   python -m venv .venv
+   source .venv/Scripts/activate  # Windows
+   ```
+3. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+4. Run the assistant:
+   ```bash
+   python main.py
+   ```
+
+---
+
+## 🛣️ Roadmap
+
+Planned features include:
+
+- 🗣️ Voice command recognition (STT)
+- 🔊 Text-to-speech feedback
+- 🤖 Natural language command parsing via LLMs
+- 📺 Smart device discovery and control
+- ☁️ Optional cloud deployment with Docker
+- 📦 Plugin marketplace or loader system
+
+---
+
+## ⚖️ License
+
+MIT License — free to use, modify, and share.
+
+---
+
+## 📎 Notes
+
+This project is under active development and serves both as a personal assistant and a platform for learning Python, Docker, APIs, and modular software design.
