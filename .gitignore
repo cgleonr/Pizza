@@ -5,6 +5,9 @@ __pycache__/
 *.pyd
 *.log
 
+# Pytests
+.pytest_cache/
+
 # Virtual environments
 .venv/
 env/
