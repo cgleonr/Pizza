@@ -11,12 +11,16 @@ load_dotenv()
 router = CommandRouter()
 nlp_map = {
     "greet": "hello",
-    "greetings": "hello",
-    "hi": "hello",
     "exit": "exit",
     "introduce": "hello",
     "quit": "exit",
+    "play": "spotify_play",
+    "pause": "spotify_pause",
+    "music": "spotify_play",   # fallback match
+    "song": "spotify_play_song",
+    "track": "spotify_play_song",
 }
+
 nlp_parser = NLPCommandParser(nlp_map)
 
 def say_hello():
