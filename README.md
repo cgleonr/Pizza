@@ -1,88 +1,126 @@
-# 🍕 Pizza – A Modular Self-Hosted Assistant
+# 🍕 Pizza — Your Self-Hosted Personal Assistant
 
-**Pizza** is a personal Python-based assistant designed to be self-hosted, modular, and extensible. It's a learning-focused project aimed at building a privacy-respecting system capable of integrating with local devices, APIs, and potentially smart home environments.
-
-Currently in early development, Pizza supports a basic command router, a plugin system, and is built with future goals including voice input, LLM integration, and cloud deployment.
+Pizza is a modular, self-hosted voice/text assistant written in Python. It helps you interact with music services like Spotify, control future smart devices, and automate simple tasks. It's built for local development, personal use, and learning advanced Python development workflows.
 
 ---
 
-## 🔧 Features
+## 🎯 Project Goals
 
-- 🧠 **Command Routing** – Commands are handled dynamically using a central command router
-- 🔌 **Plugin Architecture** – Plugins can register commands and extend functionality
-- 💡 **Environment Configuration** – Uses `.env` files for secrets and settings
-- 💬 **CLI-Based Interaction** – Lightweight, terminal-driven interface
+- Improve Python development, Docker, and API integration skills
+- Use NLP to match natural language commands to real actions
+- Design a plugin system to easily add new features (like YouTube, smart TV control, etc.)
+- Deploy on a Raspberry Pi 5 for always-on local assistance
 
 ---
 
-## 🧩 Current Plugin Examples
+## ✅ Features
 
-Plugins live in the `plugins/` directory and each defines a `register(router)` function.
+- **Command Router**: Flexible system to map text to Python functions
+- **Natural Language Parsing**: Uses `spaCy` to recognize intent and extract info
+- **Spotify Plugin**: Play, pause, search, and resume Spotify tracks
+- **Dynamic Plugin Loader**: Auto-load new features from the plugins directory
+- **Help Command**: Lists all available commands and their descriptions
+- **Test Coverage**: Uses `pytest` and `unittest.mock` for core features and plugins
+- **Environment Configuration**: Reads secrets from `.env`
 
-Example: `hello_plugin.py`
-```python
-def register(router):
-    def hello():
-        print("👋 Hello from the Hello Plugin!")
+---
 
-    router.register("hello_plugin", hello)
+## 🧠 Example Commands
+
+```
+> play Smooth Operator
+🎵 Extracted query: 'smooth operator'
+▶️ Playing 'Smooth Operator' by Sade...
+
+> now playing
+🎶 Now playing: 'Smooth Operator' by Sade
+📱 On device: CARLOS_SURFACE4 (Computer)
+
+> pause
+⏸️ Pausing playback...
+
+> help
+🧠 Available Commands:
+...
 ```
 
 ---
 
-## 📂 Project Structure
+## 🧩 Plugins
+
+### Spotify Plugin
+- `spotify_play`: Resume music
+- `spotify_pause`: Pause playback
+- `spotify_play_song`: Play any track by name
+- `spotify_now_playing`: Show current song and device
+
+Other plugin targets: YouTube, smart lights, email control
+
+---
+
+## 🔐 Environment Setup
+
+1. Create a `.env` file in the root project directory:
+```
+SPOTIFY_CLIENT_ID=your_spotify_client_id
+SPOTIFY_CLIENT_SECRET=your_spotify_client_secret
+SPOTIFY_REDIRECT_URI=http://127.0.0.1:8888/callback
+```
+
+2. Install dependencies:
+```
+python -m venv .venv
+source .venv/Scripts/activate  # or . .venv/bin/activate on Unix
+pip install -r requirements.txt
+python -m spacy download en_core_web_sm
+```
+
+3. Run the assistant:
+```
+python src/main.py
+```
+
+---
+
+## 🧪 Running Tests
+
+Use `pytest` to run all tests:
+```
+python -m pytest
+```
+
+Test files are located under `/tests` and cover all major components.
+
+---
+
+## 📁 Project Structure
 
 ```
-pizza/
-├── core/                  # Core logic (command router, future internals)
-│   └── command_router.py
-├── plugins/               # Drop-in plugin modules
-│   └── hello_plugin.py
-├── main.py                # Entry point for the assistant
-├── requirements.txt       # Dependencies
-├── .env                   # Environment variables (not committed)
+Pizza/
+├── src/
+│   ├── main.py
+│   ├── core/               # Command routing, NLP logic
+│   ├── config/             # Environment variable loader
+│   └── plugins/            # Feature modules like spotify
+├── tests/                  # Unit tests for core and plugins
+├── .env                    # Local credentials (ignored by Git)
+├── requirements.txt
+├── .gitignore
+└── README.md
 ```
 
 ---
 
-## 🚀 Getting Started
+## 🚀 Coming Soon
 
-1. Clone the repository
-2. Create and activate a virtual environment:
-   ```bash
-   python -m venv .venv
-   source .venv/Scripts/activate  # Windows
-   ```
-3. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
-4. Run the assistant:
-   ```bash
-   python main.py
-   ```
+- 🔊 Voice command integration (speech-to-text)
+- 📺 YouTube and local video player plugin
+- 🧠 LLM-based fallback for unmatched queries
+- 🐳 Dockerfile and deployment script
+- 🌐 Raspberry Pi startup service
 
 ---
 
-## 🛣️ Roadmap
+## 📄 License
 
-Planned features include:
-
-- 🗣️ Voice command recognition (STT)
-- 🔊 Text-to-speech feedback
-- 🤖 Natural language command parsing via LLMs
-- 📺 Smart device discovery and control
-- ☁️ Optional cloud deployment with Docker
-- 📦 Plugin marketplace or loader system
-
----
-
-## ⚖️ License
-
-MIT License — free to use, modify, and share.
-
----
-
-## 📎 Notes
-
-This project is under active development and serves both as a personal assistant and a platform for learning Python, Docker, APIs, and modular software design.
+MIT — free to use, modify, and learn from.
