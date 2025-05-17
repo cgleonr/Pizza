@@ -1,9 +1,12 @@
+import sys
 import os
+sys.path.append(os.path.dirname(__file__))
 from dotenv import load_dotenv
-from core.command_router import CommandRouter
-from core.command_matcher import CommandMatcher
-from core.nlp_parser import NLPCommandParser
+from pizza.core.command_router import CommandRouter
+from pizza.core.command_matcher import CommandMatcher
+from pizza.core.nlp_parser import NLPCommandParser
 import importlib.util
+from pizza.core.agent_router import create_agent_with_tools, play_song
 
 
 load_dotenv()
@@ -25,6 +28,12 @@ nlp_map = {
     "help": "help",
     "assist": "help",
     "what can you do": "help",
+    "recent": "spotify_recent_playlists",
+    "last": "spotify_recent_playlists",
+    "playlists": "spotify_list_playlists",
+    "my playlists": "spotify_list_playlists",
+    "favorite": "spotify_play_playlist",
+
 
 }
 
@@ -87,6 +96,7 @@ command_matcher = CommandMatcher(
         "help": "help",
         "assist": "help",
         "what can you do": "help",
+        
     }
 )
 
@@ -95,6 +105,12 @@ router.register("hello", say_hello)
 router.register("exit", say_goodbye)
 router.register("quit", say_goodbye)
 router.register("help", show_help)
+
+tools = [play_song]
+agent = create_agent_with_tools(tools)
+
+
+
 
 # Assistant loop
 if __name__ == "__main__":
@@ -107,33 +123,39 @@ if __name__ == "__main__":
 
             result = None
 
-            # Step 1: try command matcher
-            matched = command_matcher.match(cmd)
-            if matched:
-                print(f"Interpreted as: {matched}")
-                result = router.handle(matched)
-            else:
-                # Step 2: try NLP parser
-                parsed = nlp_parser.parse(cmd)
-                if parsed:
-                    print(f"Interpreted as: {parsed}")
+            # Step 1: Try the agent first
+            try:
+                response = agent.run(cmd)
+                print(f"🧠 Agent: {response}")
+            except Exception as e:
+                print(f"⚠️ Agent failed: {e}")
+                print("🔁 Trying command matcher...")
 
-                    # Check if the command needs a song query
-                    if parsed == "spotify_play_song":
-                        query = nlp_parser.extract_song_query(cmd)
-                        if query:
-                            print(f"🎵 Extracted query: '{query}'")
-                            result = router.handle(parsed, query=query)
-                        else:
-                            result = router.handle(parsed)  # fallback: prompt for song
-                    else:
-                        result = router.handle(parsed)
+                # Step 2: Try command matcher
+                matched = command_matcher.match(cmd)
+                if matched:
+                    print(f"🔍 Interpreted as: {matched}")
+                    result = router.handle(matched)
                 else:
-                    print("❌ Command not recognized.")
+                    # Step 3: Try NLP parser
+                    parsed = nlp_parser.parse(cmd)
+                    if parsed:
+                        print(f"🧠 NLP interpreted as: {parsed}")
+                        if parsed == "spotify_play_song":
+                            query = nlp_parser.extract_song_query(cmd)
+                            if query:
+                                print(f"🎵 Extracted query: '{query}'")
+                                result = router.handle(parsed, query=query)
+                            else:
+                                result = router.handle(parsed)
+                        else:
+                            result = router.handle(parsed)
+                    else:
+                        print("❌ Could not understand command.")
 
             if result is False:
                 break
 
         except KeyboardInterrupt:
-            print("\nExiting...")
+            print("\n👋 Exiting...")
             break

@@ -1,6 +1,6 @@
 from unittest.mock import patch, MagicMock
-from core.command_router import CommandRouter
-from plugins import spotify_plugin
+from pizza.core.command_router import CommandRouter
+from pizza.plugins import spotify_plugin
 
 @patch("builtins.input", return_value="Imagine Dragons Believer")
 @patch("plugins.spotify_plugin.Spotify")

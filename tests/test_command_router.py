@@ -1,4 +1,4 @@
-from core.command_router import CommandRouter
+from pizza.core.command_router import CommandRouter
 
 
 def test_command_registration_and_handling(capsys):
