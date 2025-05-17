@@ -1,4 +1,4 @@
-from core.nlp_parser import NLPCommandParser
+from pizza.core.nlp_parser import NLPCommandParser
 
 def test_nlp_parser_matches_lemmas():
     command_map = {
