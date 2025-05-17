@@ -34,3 +34,4 @@ build/
 coverage.xml
 htmlcov/
 .venv/
+.venv/
